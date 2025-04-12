@@ -1,0 +1,78 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Apartment Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Check stored theme preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg w-96 fade-in">
+            <h1 class="text-2xl font-bold mb-6 dark:text-white">System Login</h1>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block mb-2 dark:text-gray-300">Email</label>
+                    <input type="email" id="email" required
+                        class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div>
+                    <label class="block mb-2 dark:text-gray-300">Password</label>
+                    <input type="password" id="password" required
+                        class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div id="errorMessage" class="text-red-500 text-sm hidden"></div>
+                <button type="submit" 
+                    class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Dummy credentials (replace with real authentication in production)
+            const users = {
+                'tenant@example.com': { password: 'tenant123', role: 'tenant' },
+                'admin@example.com': { password: 'admin123', role: 'admin' }
+            };
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (users[email] && users[email].password === password) {
+                // Store user role in session storage
+                sessionStorage.setItem('userRole', users[email].role);
+                
+                // Redirect based on role
+                if (users[email].role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'tenant.html';
+                }
+            } else {
+                errorMessage.textContent = 'Invalid email or password';
+                errorMessage.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

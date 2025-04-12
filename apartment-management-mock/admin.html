@@ -1,0 +1,224 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Check authentication
+        if (!sessionStorage.getItem('userRole') || sessionStorage.getItem('userRole') !== 'admin') {
+            window.location.href = 'login.html';
+        }
+
+        // Apply theme
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    <style>
+        .nav-link {
+            @apply p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors;
+        }
+        .active-section {
+            @apply bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-200;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <nav class="bg-white dark:bg-gray-800 shadow-lg fixed w-full z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-xl font-bold dark:text-white">🏠 Admin Portal</h1>
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="showSection('tenants')" class="nav-link active-section">🏠 Tenants</button>
+                    <button onclick="showSection('leases')" class="nav-link">📄 Leases</button>
+                    <button onclick="showSection('maintenance')" class="nav-link">🔧 Maintenance</button>
+                    <button onclick="showSection('payments')" class="nav-link">💵 Payments</button>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center">AD</div>
+                    <span class="hidden md:inline dark:text-white">Admin</span>
+                </button>
+                <button onclick="logout()" class="text-red-500 hover:text-red-700">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto pt-20 px-4 pb-8">
+        <!-- Tenants Section -->
+        <section id="tenants" class="fade-in">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Tenant Management</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="p-3 text-left">Name</th>
+                                <th class="p-3 text-left">Unit</th>
+                                <th class="p-3 text-left">Lease Status</th>
+                                <th class="p-3 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="p-3 dark:text-white">John Doe</td>
+                                <td class="p-3 dark:text-white">Apt 101</td>
+                                <td class="p-3 dark:text-white">
+                                    <span class="px-2 py-1 bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 rounded-full text-sm">
+                                        Active
+                                    </span>
+                                </td>
+                                <td class="p-3">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2">Edit</button>
+                                    <button class="text-red-500 hover:text-red-700">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leases Section -->
+        <section id="leases" class="hidden fade-in">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Lease Management</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Active Leases</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="dark:text-gray-300">John Doe - Apt 101</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">01/01/2023 - 01/01/2024</p>
+                                    </div>
+                                    <button class="text-red-500 hover:text-red-700">Terminate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Create New Lease</h3>
+                        <div class="space-y-4">
+                            <input type="text" placeholder="Tenant Name" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <input type="text" placeholder="Unit Number" class="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <button class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                                Create Lease
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Maintenance Section -->
+        <section id="maintenance" class="hidden fade-in">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Maintenance Requests</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Open Requests</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="dark:text-gray-300">🔧 HVAC Repair - Apt 205</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Submitted 3h ago</p>
+                                    </div>
+                                    <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-100 rounded-full text-sm">
+                                        Pending
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Request Details</h3>
+                        <div class="space-y-4">
+                            <textarea class="w-full p-2 border rounded h-32 dark:bg-gray-700 dark:border-gray-600 dark:text-white" 
+                                    placeholder="Request details..."></textarea>
+                            <button class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                                Update Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payments Section -->
+        <section id="payments" class="hidden fade-in">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Payment Management</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Payment Records</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="dark:text-gray-300">John Doe - Apt 101</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Paid on 01/01/2023</p>
+                                    </div>
+                                    <span class="text-green-500">$1,200.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4 dark:text-white">Financial Overview</h3>
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            <p class="dark:text-gray-300">Total Collected: $12,000.00</p>
+                            <p class="dark:text-gray-300">Pending Payments: $2,400.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Section Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update active navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active-section');
+                if(link.textContent.includes(sectionId.charAt(0).toUpperCase() + sectionId.slice(1))) {
+                    link.classList.add('active-section');
+                }
+            });
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
+            document.getElementById('themeIcon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function logout() {
+            sessionStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize theme icon
+        document.getElementById('themeIcon').textContent = 
+            localStorage.getItem('darkMode') === 'true' ? '☀️' : '🌙';
+    </script>
+</body>
+</html>
