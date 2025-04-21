@@ -9,9 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "users",
         uniqueConstraints = {
@@ -34,6 +31,7 @@ public class User {
 
     @NotBlank
     @Size(max = 120)
+    @Column(name = "password") // Map field to the correct DB column
     private String password; // Store hashed password
 
     @Enumerated(EnumType.STRING)
